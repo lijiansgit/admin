@@ -333,3 +333,4 @@ ASALocalRun/
 tmp/
 test.db
 admin
+config/config.yaml

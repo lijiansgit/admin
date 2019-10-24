@@ -31,8 +31,6 @@ func main() {
 		panic(err)
 	}
 
-	// ldap.LDAP.SyncDB()
-
 	r := routers.GetRouters()
 	r.Run(config.Conf.WEB.Addr)
 }

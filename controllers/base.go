@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	log "github.com/lijiansgit/go/libs/log4go"
 )
@@ -24,4 +26,18 @@ func (b *Base) composeJSON(c *gin.Context, data interface{}) {
 		"msg":  "",
 		"data": data,
 	})
+}
+
+func (b *Base) rolesToList(roles string) (list []string) {
+	cutset := `[]'"`
+	for _, v := range cutset {
+		roles = strings.Replace(roles, string(v), "", -1)
+	}
+
+	list = strings.Split(roles, ",")
+	if len(list) > 0 {
+		return list
+	}
+
+	return nil
 }

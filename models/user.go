@@ -23,10 +23,13 @@ type User struct {
 	Email        string
 }
 
-type Routes struct {
-	gorm.Model
-	Name    string `gorm:"unique;not null"`
-	Content string
+func FirstOrCreate(user *User) (err error) {
+	// todo 有更新用户邮箱等信息的情况
+	if err = DB.Create(user).Error; err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func GetToken(username string) (token string, err error) {
@@ -52,9 +55,34 @@ func GetToken(username string) (token string, err error) {
 
 func CheckUser(token string) (user *User, err error) {
 	user = &User{Token: token}
-	if err = DB.Where(user).First(user).Error; err != nil {
+	if err = DB.Where("token = ?", token).First(user).Error; err != nil {
 		return user, err
 	}
 
 	return user, nil
+}
+
+func GetAllUsers() (users []*User, err error) {
+	if err = DB.Find(&users).Error; err != nil {
+		return users, err
+	}
+
+	return users, nil
+}
+
+// func GetAllUsersByRoleID(roleID int) (users []*User, err error) {
+// 	err = DB.Where("roles LIKE ?", fmt.Sprintf("%%%d%%", roleID)).Find(&users).Error
+// 	if err != nil {
+// 		return users, err
+// 	}
+
+// 	return users, nil
+// }
+
+func ModifyRoles(user *User) (err error) {
+	if err = DB.Model(user).Updates(user).Error; err != nil {
+		return err
+	}
+
+	return nil
 }

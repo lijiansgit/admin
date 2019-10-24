@@ -5,9 +5,9 @@ db:
   file: ./test.db
 ldap:
   addr: "127.0.0.1:389"
-  rootDN: "ou=tech,dc=test,dc=com"
-  username: "test"
-  password: "test"
+  rootDN: "ou=tech,dc=work"
+  username: "admin"
+  password: "admin"
 log:
   # log level
   # FINEST/FINE/DEBUG/TRACE/INFO/WARNING/ERROR/CRITICAL

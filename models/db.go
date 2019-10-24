@@ -27,7 +27,7 @@ func Init() (err error) {
 
 	// Migrate the schema aaaa
 	DB.AutoMigrate(&User{})
-	DB.AutoMigrate(&Routes{})
+	DB.AutoMigrate(&Role{})
 
 	return nil
 }

@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/lijiansgit/admin/config"
-	"github.com/lijiansgit/admin/models"
 	log "github.com/lijiansgit/go/libs/log4go"
 	"gopkg.in/ldap.v3"
 )
@@ -104,9 +103,9 @@ func (l *LDAPService) Login(username, password string) (bool, error) {
 	return true, nil
 }
 
-func (l *LDAPService) SyncDB() (err error) {
+func (l *LDAPService) GetUsers() (users map[string]string, err error) {
 	if err := l.CreateConn(); err != nil {
-		return err
+		return users, err
 	}
 
 	defer l.Conn.Close()
@@ -123,19 +122,18 @@ func (l *LDAPService) SyncDB() (err error) {
 
 	sr, err := l.Conn.Search(searchRequest)
 	if err != nil {
-		return err
+		return users, err
 	}
 
-	user := &models.User{}
+	users = make(map[string]string)
 	for _, entry := range sr.Entries {
 		// fmt.Println(entry.DN) CN=周青松,OU=tech,DC=tjj,DC=work
-		user.Name = entry.GetAttributeValue("sAMAccountName")
-		user.Email = entry.GetAttributeValue("mail")
-		user.ID = 0 // insert ignore id
-		models.DB.FirstOrCreate(user, user)
+		name := entry.GetAttributeValue("sAMAccountName")
+		email := entry.GetAttributeValue("mail")
+		users[name] = email
 	}
 
-	return nil
+	return users, nil
 }
 
 func Init() (err error) {
