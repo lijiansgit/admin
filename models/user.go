@@ -70,14 +70,23 @@ func GetAllUsers() (users []*User, err error) {
 	return users, nil
 }
 
-// func GetAllUsersByRoleID(roleID int) (users []*User, err error) {
-// 	err = DB.Where("roles LIKE ?", fmt.Sprintf("%%%d%%", roleID)).Find(&users).Error
-// 	if err != nil {
-// 		return users, err
-// 	}
+func GetAllUsersByName(name string) (users []*User, err error) {
+	err = DB.Where("name LIKE ?", fmt.Sprintf("%%%s%%", name)).Find(&users).Error
+	if err != nil {
+		return users, err
+	}
 
-// 	return users, nil
-// }
+	return users, nil
+}
+
+func GetAllUsersByID(id uint) (users []*User, err error) {
+	err = DB.First(&users, id).Error
+	if err != nil {
+		return users, err
+	}
+
+	return users, nil
+}
 
 func ModifyRoles(user *User) (err error) {
 	if err = DB.Model(user).Updates(user).Error; err != nil {

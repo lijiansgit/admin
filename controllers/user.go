@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/lijiansgit/admin/models"
@@ -88,9 +89,9 @@ func (u *userController) List(c *gin.Context) {
 		usersList []*UserResponseData
 	)
 
-	key := c.DefaultQuery("key", "0")
-	// all users,uri: /list
-	if key == "0" {
+	name, idStr := c.DefaultQuery("name", "0"), c.DefaultQuery("id", "0")
+	// all users, uri: /list
+	if name == idStr {
 		users, err = models.GetAllUsers()
 		if err != nil {
 			u.Base.composeErrJSON(c, err)
@@ -98,19 +99,29 @@ func (u *userController) List(c *gin.Context) {
 		}
 	}
 
-	// // search user by role, uri: /list?
-	// if key != "0" {
-	// 	id, err := strconv.Atoi(key)
-	// 	if err != nil {
-	// 		u.Base.composeErrJSON(c, err)
-	// 		return
-	// 	}
-	// 	users, err = models.GetAllUsersByRoleID(id)
-	// 	if err != nil {
-	// 		u.Base.composeErrJSON(c, err)
-	// 		return
-	// 	}
-	// }
+	// users search by name, uri: /list?name=name
+	if name != "0" {
+		users, err = models.GetAllUsersByName(name)
+		if err != nil {
+			u.Base.composeErrJSON(c, err)
+			return
+		}
+	}
+
+	// users search by id, uri: /list?id=id
+	if idStr != "0" {
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			u.Base.composeErrJSON(c, err)
+			return
+		}
+
+		users, err = models.GetAllUsersByID(uint(id))
+		if err != nil {
+			u.Base.composeErrJSON(c, err)
+			return
+		}
+	}
 
 	for _, user := range users {
 		u := &UserResponseData{

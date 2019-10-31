@@ -142,7 +142,7 @@ func (p *permissionController) CreateRole(c *gin.Context) {
 		return
 	}
 
-	b, err := json.Marshal(p.RoleRequestPayload.Routes)
+	routesByte, err := json.Marshal(p.RoleRequestPayload.Routes)
 	if err != nil {
 		p.Base.composeErrJSON(c, err)
 		return
@@ -151,7 +151,7 @@ func (p *permissionController) CreateRole(c *gin.Context) {
 	role := &models.Role{
 		Name:        p.RoleRequestPayload.Name,
 		Description: p.RoleRequestPayload.Description,
-		Routes:      string(b),
+		Routes:      string(routesByte),
 	}
 
 	p.RoleResponseData.Key, err = models.CreateRole(role)
